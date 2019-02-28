@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657868, g: 0.49641263, b: 0.57481706, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -300,11 +300,14 @@ MonoBehaviour:
   columns: 100
   minRoomSize: 6
   maxRoomSize: 20
+  minRoomHeight: 2
+  maxRoomHeight: 6
   zoneWidth: 0
   zoneHeight: 0
   amountOfZones: 2
   zoned: 0
-  floorTile: {fileID: 1192748438178430, guid: 98d8a6a04153d44609039ba5c1328760, type: 2}
+  floorTile: {fileID: 1283882451537972, guid: ac20caccc5dfafc45a160faf9df4b65f, type: 2}
+  wallTile: {fileID: 1714769443006658, guid: 3dbe1cd46a6fd9448b049db6b7519522, type: 2}
   mapSize:
     serializedVersion: 2
     x: 0

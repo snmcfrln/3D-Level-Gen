@@ -5,7 +5,7 @@ using UnityEngine;
 public class BSPGeneration : MonoBehaviour
 {
     public int rows, columns;
-    public int minRoomSize, maxRoomSize;
+    public int minRoomSize, maxRoomSize, minRoomHeight, maxRoomHeight;
 
     public int zoneWidth;
     public int zoneHeight;
@@ -19,6 +19,7 @@ public class BSPGeneration : MonoBehaviour
     private static List<Rect> corridorList = new List<Rect>();
 
     public GameObject floorTile;
+    public GameObject wallTile;
     public GameObject[,] floorPositions;
 
     int counter = 0;
@@ -39,6 +40,7 @@ public class BSPGeneration : MonoBehaviour
 
 
          DrawRooms(initialSection);
+         DrawWalls(initialSection);
 
     }
 
@@ -99,13 +101,12 @@ public class BSPGeneration : MonoBehaviour
         }
         if (section.IsLeaf())
         {
-            for (int i = (int)section.room.rect.x; i < section.room.rect.xMax; i++)
+            for (int i = (int)section.room.rect.x; i <= section.room.rect.xMax; i++)
             {
-                for (int j = (int)section.room.rect.y; j < section.room.rect.yMax; j++)
+                for (int j = (int)section.room.rect.y; j <= section.room.rect.yMax; j++)
                 {
                     GameObject instance = Instantiate(floorTile, new Vector3(i, j, 0f), Quaternion.identity) as GameObject;
                     instance.transform.SetParent(transform);
-
                 }
             }
         }
@@ -116,9 +117,57 @@ public class BSPGeneration : MonoBehaviour
         }
     }
 
+    public void DrawWalls(Section section)
+    {
+        int heightValue = 1;
+        if (section == null)
+        {
+            return;
+        }
+        if (section.IsLeaf())
+        {
+            int roomHeight = Random.Range(minRoomHeight, maxRoomHeight);
+            for (int n = 1; n < roomHeight; n++)
+            {
+                for (int i = (int)section.room.rect.x; i <= section.room.rect.xMax; i++)
+                {
+                    //Draw top
+                    GameObject instance = Instantiate(wallTile, new Vector3(i, section.room.rect.yMax, n), Quaternion.identity) as GameObject;
+                    instance.transform.SetParent(transform);
+                }
+                for (int i = (int)section.room.rect.x; i <= section.room.rect.xMax; i++)
+                {
+                    //Draw bottom
+                    GameObject instance = Instantiate(wallTile, new Vector3(i, section.room.rect.yMin, n), Quaternion.identity) as GameObject;
+                    instance.transform.SetParent(transform);
+                }
+                for (int j = (int)section.room.rect.yMin; j <= section.room.rect.yMax; j++)
+                {
+                    //Draw left
+                    GameObject instance = Instantiate(wallTile, new Vector3(section.room.rect.xMin, j, n), Quaternion.identity) as GameObject;
+                    instance.transform.SetParent(transform);
+                    heightValue++;
+                }
+                for (int j = (int)section.room.rect.yMin; j <= section.room.rect.yMax; j++)
+                {
+                    //Draw right
+                    GameObject instance = Instantiate(wallTile, new Vector3(section.room.rect.xMax, j, n), Quaternion.identity) as GameObject;
+                    instance.transform.SetParent(transform);
+                    heightValue++;
+                }
+            }
+        }
+        else
+        {
+            DrawWalls(section.left);
+            DrawWalls(section.right);
+        }
+    }
+
     public class Room
     {
         public Rect rect;
+        public int height;
         public bool hasRandomised = false;
         public float b;
         public float r;
@@ -163,7 +212,7 @@ public class BSPGeneration : MonoBehaviour
 
                 room = new Room(new Rect(rect.x + roomX, rect.y + roomY, roomWidth, roomHeight));
 
-                float corridorX = Random.Range(rect.xMin + 1, room.rect.xMax - 1);
+                float corridorX = Random.Range(room.rect.xMin + 1, room.rect.xMax - 1);
                 float corridorY;
                 if (Random.Range(0.0f, 1.0f) > 0.5f)
                 {
