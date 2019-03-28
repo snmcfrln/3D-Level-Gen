@@ -105,8 +105,16 @@ public class BSPGeneration : MonoBehaviour
             {
                 for (int j = (int)section.room.rect.y; j <= section.room.rect.yMax; j++)
                 {
-                    GameObject instance = Instantiate(floorTile, new Vector3(i, j, 0f), Quaternion.identity) as GameObject;
-                    instance.transform.SetParent(transform);
+                    //if (section.room.rect.y == section.room.corridor.y && section.room.rect.x == section.room.corridor.x)
+                    //{
+                    //    print("Doorway here");
+                    //}
+                    //else
+                    {
+                        GameObject instance = Instantiate(floorTile, new Vector3(i, j, 0f), Quaternion.identity) as GameObject;
+                        instance.transform.SetParent(transform);
+                        print("Room X: " + section.room.rect.x + "Room Y: " + section.room.rect.y + "Doorway X: " + section.room.corridor.x + "Doorway Y: " + section.room.corridor.y);
+                    }
                 }
             }
         }
@@ -168,6 +176,7 @@ public class BSPGeneration : MonoBehaviour
     {
         public Rect rect;
         public int height;
+        public Rect corridor;
         public bool hasRandomised = false;
         public float b;
         public float r;
@@ -214,6 +223,7 @@ public class BSPGeneration : MonoBehaviour
 
                 float corridorX = Random.Range(room.rect.xMin + 1, room.rect.xMax - 1);
                 float corridorY;
+
                 if (Random.Range(0.0f, 1.0f) > 0.5f)
                 {
                     corridorY = room.rect.yMax - 1;
@@ -222,8 +232,12 @@ public class BSPGeneration : MonoBehaviour
                 {
                     corridorY = room.rect.yMin;
                 }
-                corridor = new Rect(corridorX, corridorY, 1, 1);
+      
+                corridorX = Mathf.RoundToInt(corridorX);
+                corridorY = Mathf.RoundToInt(corridorY);
 
+                corridor = new Rect(corridorX, corridorY, 1, 1);
+                room.corridor = corridor;
                 roomList.Add(room);
                 corridorList.Add(corridor);
             }
